@@ -1,0 +1,33 @@
+{
+    "name": "jdz/favicon",
+    "type": "library",
+    "description": "Favicon generator",
+    "keywords": ["favicon"],
+    "homepage": "http://joffreydemetz.com/git/favicon/",
+    "version": "1.0.0",
+    "license": "MIT",
+    
+    "authors": [
+        {
+            "name": "Joffrey Demetz",
+            "email": "joffrey.demetz@gmail.com",
+            "homepage": "http://joffreydemetz.com",
+            "role": "Lead"
+        }
+    ],
+  
+    "require": {
+        "php": ">=5.3.3",
+        "ext-gd": "*",
+        "jdz/filesystem": "^1.0"
+    },
+  
+    "autoload": {
+        "psr-4": {
+            "JDZ\\Favicon\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    }
+}
