@@ -16,66 +16,66 @@ use Exception;
  */
 class Png 
 {
-	/**
-	 * Flag to tell if the required functions exist.
-	 * 
-	 * @var boolean
-	 */
-	protected $valid;
+  /**
+   * Flag to tell if the required functions exist.
+   * 
+   * @var boolean
+   */
+  protected $valid;
   
-	/**
-	 * The source file
-	 * 
-	 * @var string
-	 */
-	protected $source;
+  /**
+   * The source file
+   * 
+   * @var string
+   */
+  protected $source;
 
-	/**
-	 * The image resource
-	 * 
-	 * @var resource
-	 */
-	protected $image;
+  /**
+   * The image resource
+   * 
+   * @var resource
+   */
+  protected $image;
 
   
-	/**
-	 * Check the dependencies
-	 * 
-	 * In case composer is not used to check dependencies
-	 * 
+  /**
+   * Check the dependencies
+   * 
+   * In case composer is not used to check dependencies
+   * 
    * @throws Exception
-	 */
+   */
   public static function checkDependencies()
   {
-		$required_functions = [
-			'getimagesize',
-			'imagecreatefrompng',
-			'imagecreatefromgif',
-			'imagecreatefromjpeg',
-			'imagecreatetruecolor',
-			'imagesx',
-			'imagesy',
-			'imagecopyresampled',
-			'imagesavealpha',
-			'imagepng',
-			'imagealphablending',
-			'imagefill',
-			'imagecolorallocatealpha',
-		];
+    $required_functions = [
+      'getimagesize',
+      'imagecreatefrompng',
+      'imagecreatefromgif',
+      'imagecreatefromjpeg',
+      'imagecreatetruecolor',
+      'imagesx',
+      'imagesy',
+      'imagecopyresampled',
+      'imagesavealpha',
+      'imagepng',
+      'imagealphablending',
+      'imagefill',
+      'imagecolorallocatealpha',
+    ];
     
-		foreach($required_functions as $function){
-			if ( !function_exists($function) ){
+    foreach($required_functions as $function){
+      if ( !function_exists($function) ){
         throw new Exception('$function function does not exist, which is part of the GD library.');
-			}
-		}
+      }
+    }
   }
-	/**
-	 * Constructor 
-	 * 
-	 * @param   string    $source     Path to the source image file
+  /**
+   * Constructor 
+   * 
+   * @param   string    $source     Path to the source image file
    * @throws  GeneratorException
-	 */
-	public function __construct($source)
+   */
+  public function __construct($source)
   {
     $this->source = $source;
     $this->valid  = false;
@@ -96,37 +96,37 @@ class Png
     }
   }
   
-	/**
-	 * Resize image to square
-	 *
-	 * @param   string    $file     Path to the destination file
-	 * @param   int       $size     The destination size
+  /**
+   * Resize image to square
+   *
+   * @param   string    $file     Path to the destination file
+   * @param   int       $size     The destination size
    * @return  boolean
-	 */
-	public function square($file, $size)
+   */
+  public function square($file, $size)
   {
-		if ( $this->valid === false ){
-			return false;
+    if ( $this->valid === false ){
+      return false;
     }
     
     $this->scale($size, $size);
     imagepng($this->image, $file);
-		return true;
+    return true;
   }
   
-	/**
-	 * Create a ms tile
-	 *
-	 * @param   string    $file           Path to the destination file
-	 * @param   string    $background     The background color (hex)
-	 * @param   int       $width          The tile width
-	 * @param   int       $height         The tile height
+  /**
+   * Create a ms tile
+   *
+   * @param   string    $file           Path to the destination file
+   * @param   string    $background     The background color (hex)
+   * @param   int       $width          The tile width
+   * @param   int       $height         The tile height
    * @return  boolean
-	 */
-	public function tile($file, $background, $width, $height)
+   */
+  public function tile($file, $background, $width, $height)
   {
-		if ( $this->valid === false ){
-			return false;
+    if ( $this->valid === false ){
+      return false;
     }
     
     if ( substr($background, 0, 1) === '#' ){
@@ -145,7 +145,7 @@ class Png
     $blankbox = imagecreatetruecolor($width, $height);
     imagealphablending($blankbox, true);
     $background = imagecolorallocatealpha($blankbox, $r, $v, $b, 127);
-		imagefill($blankbox, 0, 0, $background);
+    imagefill($blankbox, 0, 0, $background);
     imagealphablending($blankbox, false);
     imagesavealpha($blankbox, true);
     
@@ -165,19 +165,19 @@ class Png
     $y = floor(( $height - $innerHeight ) / 2);
     
     // buid & save
-		imagecopyresampled($blankbox, $inner, $x, $y, 0, 0, $width, $height, $width, $height);
+    imagecopyresampled($blankbox, $inner, $x, $y, 0, 0, $width, $height, $width, $height);
     imagepng($blankbox, $file);
     
-		return true;
+    return true;
   }
   
-	/**
-	 * Scale image
-	 *
-	 * @param   int       $width          The destination width
-	 * @param   int       $height         The destination height
+  /**
+   * Scale image
+   *
+   * @param   int       $width          The destination width
+   * @param   int       $height         The destination height
    * @return  void
-	 */
+   */
   protected function scale($width, $height)
   { 
     $w = $this->getWidth();
@@ -198,15 +198,15 @@ class Png
     }
   }  
   
-	/**
-	 * Resize image
-	 *
+  /**
+   * Resize image
+   *
    * Stores the image resource in $this->image
    * 
-	 * @param   int       $width          The destination width
-	 * @param   int       $height         The destination height
+   * @param   int       $width          The destination width
+   * @param   int       $height         The destination height
    * @return  void
-	 */
+   */
   protected function resize($width, $height)
   {
     imagesavealpha($this->image, true);
@@ -221,21 +221,21 @@ class Png
     $this->image = $im;
   }
   
-	/**
-	 * Get the image resource width
-	 *
+  /**
+   * Get the image resource width
+   *
    * @return  int   The image width
-	 */
+   */
   protected function getWidth()
   {
     return imagesx($this->image);
   }
   
-	/**
-	 * Get the image resource height
-	 *
+  /**
+   * Get the image resource height
+   *
    * @return  int   The image height
-	 */
+   */
   protected function getHeight()
   {
     return imagesy($this->image);
