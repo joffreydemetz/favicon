@@ -19,7 +19,7 @@ use Exception;
 /**
  * Favicon generator
  * 
- * @author      Joffrey Demetz <joffrey.demetz@gmail.com>
+ * @author  Joffrey Demetz <joffrey.demetz@gmail.com>
  */
 class Generator
 {
