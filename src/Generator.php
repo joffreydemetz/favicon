@@ -10,16 +10,14 @@ namespace JDZ\Favicon;
 use JDZ\Filesystem\Folder;
 use JDZ\Filesystem\File;
 use JDZ\Filesystem\Path;
-
 use JDZ\Favicon\Exception\ConfigException;
 use JDZ\Favicon\Exception\GeneratorException;
-
 use Exception;
 
 /**
  * Favicon generator
  * 
- * @author  Joffrey Demetz <joffrey.demetz@gmail.com>
+ * @author Joffrey Demetz <joffrey.demetz@gmail.com>
  */
 class Generator
 {
@@ -35,41 +33,6 @@ class Generator
    * 
    */
   protected $destPath;
-
-  /**
-   * Include the 64x64 image in the ICO or not
-   *
-   * @var bool 
-   */
-  protected $use64Icon;
-
-  /**
-   * Include the 48x48 image in the ICO or not
-   *
-   * @var bool 
-   */
-  protected $use48Icon;
-
-  /**
-   * Exclude old apple touch images
-   *
-   * @var type 
-   */
-  protected $noOldApple;
-
-  /**
-   * Exclude manifest.json and Android images
-   * 
-   * @var type 
-   */
-  protected $noAndroid;
-
-  /**
-   * Exclude Windows and IE tile images
-   *
-   * @var type 
-   */
-  protected $noMs;
 
   /**
    * Android manifest app name
@@ -130,6 +93,41 @@ class Generator
   protected $infoBuffer;
 
   /**
+   * Include the 64x64 image in the ICO or not
+   *
+   * @var bool 
+   */
+  protected $use64Icon = false;
+
+  /**
+   * Include the 48x48 image in the ICO or not
+   *
+   * @var bool 
+   */
+  protected $use48Icon = false;
+
+  /**
+   * Exclude old apple touch images
+   *
+   * @var type 
+   */
+  protected $noOldApple = true;
+
+  /**
+   * Exclude manifest.json and Android images
+   * 
+   * @var type 
+   */
+  protected $noAndroid = false;
+
+  /**
+   * Exclude Windows and IE tile images
+   *
+   * @var type 
+   */
+  protected $noMs = true;
+
+  /**
    * Constructor
    *
    * @param   array   $properties   Key/Value pairs
@@ -137,7 +135,9 @@ class Generator
   public function __construct(array $properties=[])
   {
     foreach($properties as $key => $value){
-      $this->{$key} = $value;
+      if ( property_exists($this, $key) ){
+        $this->{$key} = $value;
+      }
     }
     
     $this->filePath   = Path::clean($this->filePath);
@@ -200,7 +200,6 @@ class Generator
     }
     
     if ( $this->noMs === false ){
-      $this->infoBuffer[] = 'browserconfig.xml (Microsoft)';
       $this->generateBrowserConfigXml();
     }
   }

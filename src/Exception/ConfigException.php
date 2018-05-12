@@ -12,7 +12,7 @@ use \Exception;
 /**
  * Favicon config exception
  * 
- * @author  Joffrey Demetz <joffrey.demetz@gmail.com>
+ * @author Joffrey Demetz <joffrey.demetz@gmail.com>
  */
 class ConfigException extends Exception
 {

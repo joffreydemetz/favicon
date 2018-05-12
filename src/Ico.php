@@ -12,7 +12,7 @@ use Exception;
 /**
  * Ico favicon generator
  * 
- * @author  Joffrey Demetz <joffrey.demetz@gmail.com>
+ * @author Joffrey Demetz <joffrey.demetz@gmail.com>
  */
 class Ico 
 {

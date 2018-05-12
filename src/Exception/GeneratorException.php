@@ -12,7 +12,7 @@ use \RuntimeException;
 /**
  * Favicon generator exception
  * 
- * @author  Joffrey Demetz <joffrey.demetz@gmail.com>
+ * @author Joffrey Demetz <joffrey.demetz@gmail.com>
  */
 class GeneratorException extends RuntimeException
 {
