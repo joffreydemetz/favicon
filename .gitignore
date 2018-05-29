@@ -1,5 +1,2 @@
 phpdoc.dist.xml
-composer.phar
-composer.lock
 /doc/
-/vendor/
