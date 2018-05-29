@@ -287,6 +287,8 @@ class Ico
     if ( false === ($file_data=file_get_contents($file)) ){
       return false;
     }
+    
+    // debugMe($file_data);
 
     if ( false === ($im=imagecreatefromstring($file_data)) ){
       return false;
