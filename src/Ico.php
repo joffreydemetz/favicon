@@ -288,8 +288,6 @@ class Ico
       return false;
     }
     
-    // debugMe($file_data);
-
     if ( false === ($im=imagecreatefromstring($file_data)) ){
       return false;
     }
