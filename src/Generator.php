@@ -158,7 +158,6 @@ class Generator
   /**
    * Build favicons
    *
-   * @return void
    * @throws GeneratorException
    */
   public function execute()
@@ -207,7 +206,6 @@ class Generator
   /**
    * Generate ICO icon
    * 
-   * @return void
    * @throws GeneratorException
    */
   protected function generateIco()
@@ -248,7 +246,6 @@ class Generator
   /**
    * Generate PNG files
    * 
-   * @return void
    * @throws GeneratorException
    */
   protected function generatePngs()
@@ -292,7 +289,6 @@ class Generator
   /**
    * Generate The manifest.json file
    * 
-   * @return void
    */
   protected function generateManifestJson()
   {
@@ -353,7 +349,6 @@ class Generator
   /**
    * Generate The browserconfig.xml file
    * 
-   * @return void
    */
   protected function generateBrowserConfigXml()
   {
