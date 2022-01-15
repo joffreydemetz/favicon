@@ -7,12 +7,8 @@
  */
 namespace JDZ\Favicon;
 
-use JDZ\Filesystem\Folder;
-use JDZ\Filesystem\File;
-use JDZ\Filesystem\Path;
 use JDZ\Favicon\Exception\ConfigException;
 use JDZ\Favicon\Exception\GeneratorException;
-use Exception;
 
 /**
  * Favicon generator
@@ -140,8 +136,8 @@ class Generator
       }
     }
     
-    $this->filePath   = Path::clean($this->filePath);
-    $this->destPath   = Path::clean($this->destPath);
+    $this->filePath   = $this->cleanPath($this->filePath);
+    $this->destPath   = $this->cleanPath($this->destPath);
     $this->infoBuffer = [];
   }
   
@@ -163,31 +159,31 @@ class Generator
   public function execute()
   {
     try {
-      if ( !Folder::exists($this->destPath) ){
-        Folder::create($this->destPath);
+      if ( !file_exists($this->destPath) ){
+        mkdir($this->destPath);
       }
     }
-    catch(Exception $e){
+    catch(\Exception $e){
       throw new GeneratorException('Error creating the root folder: '.$this->destPath);
     }
     
     try {
-      if ( !Folder::exists($this->destPath.'favicon/') ){
-        Folder::create($this->destPath.'favicon/');
+      if ( !file_exists($this->cleanPath($this->destPath.'favicon/')) ){
+        mkdir($this->cleanPath($this->destPath.'favicon/'));
       }
     }
-    catch(Exception $e){
+    catch(\Exception $e){
       throw new GeneratorException('Error creating the favicon folder in '.$this->destPath);
     }
     
-    if ( '' === $this->filePath || !File::exists($this->filePath) ){
+    if ( '' === $this->filePath || !file_exists($this->filePath) ){
       throw new GeneratorException('Input file does not exist: '.$this->filePath);
     }
     
     try {
       Ico::checkDependencies();
       Png::checkDependencies();
-    } catch(Exception $e){
+    } catch(\Exception $e){
       throw new GeneratorException($e->getMessage());
     }
     
@@ -222,23 +218,23 @@ class Generator
       $ico->add($this->filePath, [64, 64]);
     }
     
-    $destPath = Path::clean($this->destPath.'favicon/favicon.ico');
+    $destPath = $this->cleanPath($this->destPath.'favicon/favicon.ico');
     $ico->save($destPath);
     
-    if ( !File::exists($destPath) ){
+    if ( !file_exists($destPath) ){
       throw new GeneratorException('Failed writing favicon/favicon.ico');
     }
     
     $this->infoBuffer[] = $destPath;
     
-    $destPath2 = Path::clean($this->destPath.'favicon.ico');
+    $destPath2 = $this->cleanPath($this->destPath.'favicon.ico');
     
     $this->infoBuffer[] = $destPath2;
     
     try {
-      File::copy($destPath, $destPath2);
+      copy($destPath, $destPath2);
     }
-    catch(Exception $e){
+    catch(\Exception $e){
       throw new GeneratorException('Failed copying favicon/favicon.ico to favicon.ico ('.$e->getMessage().')');
     }
   }
@@ -270,7 +266,7 @@ class Generator
       
       $png = new Png($this->filePath);
       
-      $imagePath = Path::clean($this->destPath.'/favicon/'.$imageName);
+      $imagePath = $this->cleanPath($this->destPath.'/favicon/'.$imageName);
       if ( substr($imageName, 0, 6) === 'mstile' && $width !== 144 ){
         $png->tile($imagePath, $this->appThemeColor, $width, $height);
       }
@@ -278,7 +274,7 @@ class Generator
         $png->square($imagePath, $width);
       }
       
-      if ( !File::exists($imagePath) ){
+      if ( !file_exists($imagePath) ){
         throw new GeneratorException('Failed writing '.$imageName);
       }
       
@@ -334,14 +330,14 @@ class Generator
     }
     
     $json = json_encode($manifest, JSON_PRETTY_PRINT);
-    $jsonFilePath = Path::clean($this->destPath.'favicon/manifest.json');
+    $jsonFilePath = $this->cleanPath($this->destPath.'favicon/manifest.json');
     
     $this->infoBuffer[] = $jsonFilePath;
     
     try {
-      File::write($jsonFilePath, $json);
+      $this->writeFile($jsonFilePath, $json);
     }
-    catch(Exception $e){
+    catch(\Exception $e){
       throw new GeneratorException('Failed writing manifest.json ('.$e->getMessage().')');
     }
   }
@@ -369,15 +365,33 @@ class Generator
     $xml .= "\t".'</msapplication>'."\n";
     $xml .= '</browserconfig>'."\n";
     
-    $xmlFilePath = Path::clean($this->destPath.'favicon/browserconfig.xml');
+    $xmlFilePath = $this->cleanPath($this->destPath.'favicon/browserconfig.xml');
     
     $this->infoBuffer[] = $xmlFilePath;
     
     try {
-      File::write($xmlFilePath, $xml);
+      $this->writeFile($xmlFilePath, $xml);
     }
-    catch(Exception $e){
+    catch(\Exception $e){
       throw new GeneratorException('Failed writing browserconfig.xml ('.$e->getMessage().')');
     }
+  }
+  
+  private function cleanPath(string $path): string
+  {
+    $path = trim($path);
+    
+    if ( '' !== $path ){
+      $path = preg_replace('#[/\\\\]+#', \DIRECTORY_SEPARATOR, $path);
+    }
+    
+    return $path;
+  }
+  
+  private function writeFile(string $path, string $content): bool
+  {
+    file_put_contents($path, $content);
+    
+    return file_exists($path);
   }
 }
